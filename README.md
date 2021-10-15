@@ -18,24 +18,37 @@ If its location is set (E.G. on a single-monitor system), the wallpaper will be 
 
 ## Examples
 
-```
-dpedit.exe 1 0 0 2 -1920 21
-```
+> Command Line:
+> ```
+> dpedit.exe 1 0 0 2 -1920 21
+> ```
+> Powershell (Windows Terminal):
+> ```
+> ./dpedit.exe 1 0 0 2 -1920 21
+> ```
+
 Moves the main monitor to coords {0, 0} and positions the secondary monitor to the left of
 and 21 pixels lower than the main monitor (coords {-1920, 21}).
 This example assumes the secondary monitor to be 1080p.
+
 
 Results in the following monitor configuration:
 
 ![Example 1](https://user-images.githubusercontent.com/43104632/122635504-585a4880-d0b2-11eb-8242-18adf913d570.jpg)
 
 ---
+> Command Line:
+> ```
+> dpedit.exe 2 0 1080
+> ```
+> Powershell (Windows Terminal):
+> ```
+> ./dpedit.exe 2 0 1080
+> ```
 
-```
-dpedit.exe 2 0 1080 1 0 0
-```
-Moves the main monitor to coords {0, 0} and positions the secondary monitor below the main monitor (coords {0, 1080}).
+Assuming the main monitor is at coords {0, 0}, positions the secondary monitor below the main monitor (coords {0, 1080}).
 This example assumes the secondary monitor to be 1080p.
+
 
 Results in the following monitor configuration:
 
