@@ -47,7 +47,7 @@ Results in the following monitor configuration:
 > ```
 
 Assuming the main monitor is at coords {0, 0}, positions the secondary monitor below the main monitor (coords {0, 1080}).
-This example assumes the secondary monitor to be 1080p.
+This example assumes the primary monitor to be 1080p.
 
 
 Results in the following monitor configuration:
