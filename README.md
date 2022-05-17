@@ -1,19 +1,19 @@
-# DPEdit 1.0.0
-DPEdit is a simple command line utility to accurately set the relative position of monitors in a dual- or multi-monitor setup.
+# DPEdit 1.1.0
+DPEdit is a simple command line utility to accurately set the relative position of displays in a dual- or multi-monitor setup.
 
 ## Usage
 
 Basic command syntax is as follows:
 ```
-dpedit.exe <monitorNum> <xPos> <yPos> [<monitorNum2> <xPos2> <yPos2>] ...
+dpedit.exe <displayNum> <xPos> <yPos> [<displayNum2> <xPos2> <yPos2>] ...
 ```
-`<monitorNum>` is the index of the monitor to position, where 1 = Main, 2 = Secondary, etc.
+`<displayNum>` is the index of the display to position (can be listed using `dpedit.exe /L`)
 
-`<xPos>` is the X, or horizontal, position, in pixels, of the top-left corner of monitor `<monitorNum>`.
+`<xPos>` is the X, or horizontal, position, in pixels, of the top-left corner of display `<displayNum>`.
 
-`<yPos>` is the Y, or vertical, position, in pixels, of the top-left corner of monitor `<monitorNum>`.
+`<yPos>` is the Y, or vertical, position, in pixels, of the top-left corner of display `<displayNum>`.
 
-NOTE: The main monitor (monitor 1) remains at position {0, 0} at all times. Specifying its location at all is entirely optional.
+NOTE: Display #1 remains at position {0, 0} at all times. Specifying its location at all is entirely optional.
 If its location is set (E.G. on a single-monitor system), the wallpaper will be offset accordingly. However, it will still be at position {0, 0}.
 
 ## Examples
@@ -27,9 +27,9 @@ If its location is set (E.G. on a single-monitor system), the wallpaper will be 
 > ./dpedit.exe 1 0 0 2 -1920 21
 > ```
 
-Moves the main monitor to coords {0, 0} and positions the secondary monitor to the left of
-and 21 pixels lower than the main monitor (coords {-1920, 21}).
-This example assumes the secondary monitor to be 1080p.
+Moves Display #1 to coords {0, 0} and positions Display #2 to the left of
+and 21 pixels lower than Display #1 (coords {-1920, 21}).
+This example assumes Display #2 to be 1080p.
 
 
 Results in the following monitor configuration:
@@ -46,8 +46,8 @@ Results in the following monitor configuration:
 > ./dpedit.exe 2 0 1080
 > ```
 
-Assuming the main monitor is at coords {0, 0}, positions the secondary monitor below the main monitor (coords {0, 1080}).
-This example assumes the primary monitor to be 1080p.
+Assuming Display #1 is at coords {0, 0}, positions Display #2 below Display #1 (coords {0, 1080}).
+This example assumes Display #1 to be 1080p.
 
 
 Results in the following monitor configuration:
