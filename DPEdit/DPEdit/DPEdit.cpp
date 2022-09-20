@@ -58,16 +58,16 @@ int main(int argc, char** argv)
             for (auto i = 0; EnumDisplayDevices(nullptr, i, &displayDevice, EDD_GET_DEVICE_INTERFACE_NAME); i++) {
                 WCHAR buf[MAX_SIZE]{};
                 wsprintf(buf,
-                    L"\r\n\
-Display #%d\r\n\
-Device name: %s\r\n\
-Device string: %s\r\n\
-Active: %d\r\n\
-Mirroring: %d\r\n\
-Modes pruned: %d\r\n\
-Primary: %d\r\n\
-Removable: %d\r\n\
-VGA compatible: %d\r\n",
+                    L"\r\n"
+                    L"Display #%d\r\n"
+                    L"Device name: %s\r\n"
+                    L"Device string: %s\r\n"
+                    L"Active: %d\r\n"
+                    L"Mirroring: %d\r\n"
+                    L"Modes pruned: %d\r\n"
+                    L"Primary: %d\r\n"
+                    L"Removable: %d\r\n"
+                    L"VGA compatible: %d\r\n",
                     i,
                     displayDevice.DeviceName,
                     displayDevice.DeviceString,
