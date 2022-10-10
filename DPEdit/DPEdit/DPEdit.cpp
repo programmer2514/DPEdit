@@ -6,7 +6,7 @@
  | position of monitors in a dual- or multi- monitor setup.     |
   --------------------------------------------------------------*/
 
-/* 
+/*
 * Original code from here:
 * https://what.thedailywtf.com/topic/26137/windows-10-display-arranging-sucks-so-i-fixed-it-by-setting-the-pixel-positions-manually
 * Credit to LB_ for the basic methods used in this utility.
@@ -29,18 +29,16 @@ bool is_valid_int(string s);
 int main(int argc, char** argv)
 {
     if (argc > 1) {
-        if ((!strcmp(argv[1], "/L")) || (!strcmp(argv[1], "/l"))) {
+
+        if ((!strcmp(argv[1], "/L")) || (!strcmp(argv[1], "/l")))
             list_displays();
 
-        } else if ((!strcmp(argv[1], "/H")) || (!strcmp(argv[1], "/h")) || (!strcmp(argv[1], "/?"))) {
+        else if ((!strcmp(argv[1], "/H")) || (!strcmp(argv[1], "/h")) || (!strcmp(argv[1], "/?")))
             show_help();
 
-        } else {
-            set_display_pos(argc, argv);
-        }
-    } else {
-        show_help();
-    }
+        else set_display_pos(argc, argv);
+
+    } else show_help();
 
     return 0;
 }
