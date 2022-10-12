@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
- | Display Position Editor v1.2.1                               |
+ | Display Position Editor v1.2.2                               |
  | By Benjamin J. Pryor                                         |
  |--------------------------------------------------------------|
  | A simple command line utility to accurately set the relative |
@@ -100,7 +100,7 @@ void list_displays(void) {
 }
 
 void show_help(void) {
-    cout << endl << "DPEdit 1.2.1" << endl;
+    cout << endl << "DPEdit 1.2.2" << endl;
     cout << "A command line utility to accurately position displays in a multi-monitor setup." << endl << endl;
     cout << "Usage: dpedit.exe [/H] [/?]" << endl;
     cout << "       dpedit.exe /L" << endl;
@@ -121,5 +121,5 @@ void show_help(void) {
 }
 
 bool is_valid_int(string s) {
-    return !s.empty() && (s.find_first_not_of("0123456789") == string::npos);
+    return !s.empty() && (s.find_first_not_of("-0123456789") == string::npos);
 }
