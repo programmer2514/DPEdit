@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
- | Display Position Editor v1.2.0                               |
+ | Display Position Editor v1.2.1                               |
  | By Benjamin J. Pryor                                         |
  |--------------------------------------------------------------|
  | A simple command line utility to accurately set the relative |
@@ -16,8 +16,6 @@
 #include <iostream>
 #include <string>
 #include <Windows.h>
-
-#define MAX_SIZE 400
 
 using namespace std;
 
@@ -81,44 +79,28 @@ void set_display_pos(int argc, char** argv) {
 void list_displays(void) {
     DISPLAY_DEVICE displayDevice{ sizeof displayDevice, };
 
-    for (auto i = 0; EnumDisplayDevices(nullptr, i, &displayDevice, EDD_GET_DEVICE_INTERFACE_NAME); i++) {
-        WCHAR buf[MAX_SIZE]{};
-        wsprintf(buf,
-            L"\r\n"
-            L"Display #%d\r\n"
-            L"Device name: %s\r\n"
-            L"Device string: %s\r\n"
-            L"Active: %d\r\n"
-            L"Mirroring: %d\r\n"
-            L"Modes pruned: %d\r\n"
-            L"Primary: %d\r\n"
-            L"Removable: %d\r\n"
-            L"VGA compatible: %d\r\n",
-            i + 1,
-            displayDevice.DeviceName,
-            displayDevice.DeviceString,
-            displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE,
-            displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER,
-            displayDevice.StateFlags & DISPLAY_DEVICE_MODESPRUNED,
-            displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE,
-            displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE,
-            displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE);
-
-        DWORD dwSize{ 0 };
-        WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &dwSize, nullptr);
+    for (int i = 0; EnumDisplayDevices(nullptr, i, &displayDevice, EDD_GET_DEVICE_INTERFACE_NAME); i++) {
+        cout << endl;
+        cout << "Display #" << i + 1 << endl;
+        wcout << "Device name: " << displayDevice.DeviceName << endl;
+        wcout << "Device string: " << displayDevice.DeviceString << endl;
+        cout << "Active: " << (displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE) << endl;
+        cout << "Mirroring: " << (displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER) << endl;
+        cout << "Modes pruned: " << (displayDevice.StateFlags & DISPLAY_DEVICE_MODESPRUNED) << endl;
+        cout << "Primary: " << (displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE) << endl;
+        cout << "Removable: " << (displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE) << endl;
+        cout << "VGA compatible: " << (displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE) << endl;
 
         DEVMODE devMode{ {}, {}, {}, sizeof devMode, 0, };
         if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode))
         {
-            wsprintf(buf, L"Position: {%ld, %ld}\r\n", devMode.dmPosition.x, devMode.dmPosition.y);
-            dwSize = 0;
-            WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &dwSize, nullptr);
+            cout << "Position: {" << devMode.dmPosition.x << ", " << devMode.dmPosition.y << "}" << endl;
         }
     }
 }
 
 void show_help(void) {
-    cout << endl << "DPEdit 1.2.0" << endl;
+    cout << endl << "DPEdit 1.2.1" << endl;
     cout << "A command line utility to accurately position displays in a multi-monitor setup." << endl << endl;
     cout << "Usage: dpedit.exe [/H] [/?]" << endl;
     cout << "       dpedit.exe /L" << endl;
