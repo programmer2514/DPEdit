@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
- | Display Position Editor v1.2.2                               |
+ | Display Position Editor v1.3.0                               |
  | By Benjamin J. Pryor                                         |
  |--------------------------------------------------------------|
  | A simple command line utility to accurately set the relative |
@@ -94,13 +94,14 @@ void list_displays(void) {
         DEVMODE devMode{ {}, {}, {}, sizeof devMode, 0, };
         if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode))
         {
+            cout << "Dimensions: {" << devMode.dmPelsWidth << ", " << devMode.dmPelsHeight << "}" << endl;
             cout << "Position: {" << devMode.dmPosition.x << ", " << devMode.dmPosition.y << "}" << endl;
         }
     }
 }
 
 void show_help(void) {
-    cout << endl << "DPEdit 1.2.2" << endl;
+    cout << endl << "DPEdit 1.3.0" << endl;
     cout << "A command line utility to accurately position displays in a multi-monitor setup." << endl << endl;
     cout << "Usage: dpedit.exe [/H] [/?]" << endl;
     cout << "       dpedit.exe /L" << endl;
