@@ -13,7 +13,7 @@ dpedit.exe <displayNum> <xPos> <yPos> [<displayNum2> <xPos2> <yPos2>] ...
 
 `<yPos>` is the Y, or vertical, position, in pixels, of the top-left corner of display `<displayNum>`.
 
-NOTE: Display #1 remains at position {0, 0} at all times. Specifying its location at all is entirely optional.
+NOTE: Whatever display is currently set as primary remains at position {0, 0} at all times. Specifying its location at all is entirely optional.
 If its location is set (E.G. on a single-monitor system), the wallpaper will be offset accordingly. However, it will still be at position {0, 0}.
 
 ## Examples
