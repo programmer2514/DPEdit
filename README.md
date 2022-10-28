@@ -1,4 +1,6 @@
-# DPEdit 1.2.0
+# DPEdit 1.3.0
+### Don't like command line? Check out [DPEdit GUI](https://github.com/programmer2514/DPEdit-GUI)
+
 DPEdit is a simple command line utility to accurately set the relative position of displays in a dual- or multi-monitor setup.
 
 ## Usage
