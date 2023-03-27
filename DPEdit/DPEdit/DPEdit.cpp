@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
- | Display Position Editor v1.3.1                               |
+ | Display Position Editor v1.3.2                               |
  | By Benjamin J. Pryor                                         |
  |--------------------------------------------------------------|
  | A simple command line utility to accurately set the relative |
@@ -28,11 +28,14 @@ int main(int argc, char** argv)
 {
     if (argc > 1) {
 
-        if ((!strcmp(argv[1], "/L")) || (!strcmp(argv[1], "/l")))
-            list_displays();
-
-        else if ((!strcmp(argv[1], "/H")) || (!strcmp(argv[1], "/h")) || (!strcmp(argv[1], "/?")))
+        if (!strcmp(argv[1], "/H")
+         || !strcmp(argv[1], "/h")
+         || !strcmp(argv[1], "/?"))
             show_help();
+
+        else if (!strcmp(argv[1], "/L")
+              || !strcmp(argv[1], "/l"))
+            list_displays();
 
         else set_display_pos(argc, argv);
 
@@ -101,7 +104,7 @@ void list_displays(void) {
 }
 
 void show_help(void) {
-    wcout << endl << "DPEdit 1.3.1" << endl;
+    wcout << endl << "DPEdit 1.3.2" << endl;
     wcout << "A command line utility to accurately position displays in a multi-monitor setup." << endl << endl;
     wcout << "Usage: dpedit.exe [/H] [/?]" << endl;
     wcout << "       dpedit.exe /L" << endl;
