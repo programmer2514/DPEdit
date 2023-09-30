@@ -31,4 +31,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Built executable
-        path: DPEdit\DPEdit\x64\Release\DPEdit.exe
+        path: DPEdit\x64\Release\DPEdit.exe
