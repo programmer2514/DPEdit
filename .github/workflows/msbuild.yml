@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  SOLUTION_FILE_PATH: .
+  SOLUTION_FILE_PATH: DPEdit
   BUILD_CONFIGURATION: Release
 
 permissions:
