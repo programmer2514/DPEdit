@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
- | Display Position Editor v1.3.2                               |
+ | Display Position Editor v1.3.3                               |
  | By Benjamin J. Pryor                                         |
  |--------------------------------------------------------------|
  | A simple command line utility to accurately set the relative |
@@ -54,13 +54,13 @@ void set_display_pos(int argc, char** argv) {
 
             wcout << endl << "Applying position {" << argv[(3 * i) + 2] << ", " << argv[(3 * i) + 3] << "} to Display #" << argv[(3 * i) + 1] << "..." << endl;
 
-            if (EnumDisplayDevicesW(NULL, stoi(argv[(3 * i) + 1]) - 1, &dmInfo, EDD_GET_DEVICE_INTERFACE_NAME) != 0) {
+            if (EnumDisplayDevicesW(NULL, stol(argv[(3 * i) + 1]) - 1, &dmInfo, EDD_GET_DEVICE_INTERFACE_NAME) != 0) {
 
                 if (EnumDisplaySettingsExW(dmInfo.DeviceName, ENUM_CURRENT_SETTINGS, &dmMode, EDS_RAWMODE) != 0) {
 
                     dmMode.dmFields = DM_POSITION;
-                    dmMode.dmPosition.x = stoi(argv[(3 * i) + 2]);
-                    dmMode.dmPosition.y = stoi(argv[(3 * i) + 3]);
+                    dmMode.dmPosition.x = stol(argv[(3 * i) + 2]);
+                    dmMode.dmPosition.y = stol(argv[(3 * i) + 3]);
 
                     if (ChangeDisplaySettingsExW(dmInfo.DeviceName, &dmMode, NULL, CDS_GLOBAL | CDS_UPDATEREGISTRY, NULL) == DISP_CHANGE_SUCCESSFUL)
                         wcout << "Done!" << endl << endl;
@@ -82,7 +82,7 @@ void set_display_pos(int argc, char** argv) {
 void list_displays(void) {
     DISPLAY_DEVICE displayDevice{ sizeof displayDevice, };
 
-    for (int i = 0; EnumDisplayDevices(nullptr, i, &displayDevice, EDD_GET_DEVICE_INTERFACE_NAME); i++) {
+    for (long i = 0; EnumDisplayDevices(nullptr, i, &displayDevice, EDD_GET_DEVICE_INTERFACE_NAME); i++) {
         wcout << endl;
         wcout << "Display #" << i + 1 << endl;
         wcout << "Device name: " << displayDevice.DeviceName << endl;
@@ -104,7 +104,7 @@ void list_displays(void) {
 }
 
 void show_help(void) {
-    wcout << endl << "DPEdit 1.3.2" << endl;
+    wcout << endl << "DPEdit 1.3.3" << endl;
     wcout << "A command line utility to accurately position displays in a multi-monitor setup." << endl << endl;
     wcout << "Usage: dpedit.exe [/H] [/?]" << endl;
     wcout << "       dpedit.exe /L" << endl;
