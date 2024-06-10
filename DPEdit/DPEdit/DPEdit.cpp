@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
- | Display Position Editor v1.3.3                               |
+ | Display Position Editor v1.4.0                               |
  | By Benjamin J. Pryor                                         |
  |--------------------------------------------------------------|
  | A simple command line utility to accurately set the relative |
@@ -20,7 +20,7 @@
 using namespace std;
 
 void set_display_pos(int argc, char** argv);
-void list_displays(void);
+void list_displays(bool showAll);
 void show_help(void);
 bool is_valid_int(string s);
 
@@ -28,14 +28,14 @@ int main(int argc, char** argv)
 {
     if (argc > 1) {
 
-        if (!strcmp(argv[1], "/H")
-         || !strcmp(argv[1], "/h")
-         || !strcmp(argv[1], "/?"))
+        if (!strcmp(argv[1], "/H") || !strcmp(argv[1], "/h") || !strcmp(argv[1], "/?"))
             show_help();
 
-        else if (!strcmp(argv[1], "/L")
-              || !strcmp(argv[1], "/l"))
-            list_displays();
+        else if (!strcmp(argv[1], "/L") || !strcmp(argv[1], "/l")) {
+            if (argc > 2 && (!strcmp(argv[2], "/A") || !strcmp(argv[2], "/a")))
+                list_displays(true);
+            else list_displays(false);
+        }
 
         else set_display_pos(argc, argv);
 
@@ -79,39 +79,42 @@ void set_display_pos(int argc, char** argv) {
     }
 }
 
-void list_displays(void) {
+void list_displays(bool showAll) {
     DISPLAY_DEVICE displayDevice{ sizeof displayDevice, };
 
     for (long i = 0; EnumDisplayDevices(nullptr, i, &displayDevice, EDD_GET_DEVICE_INTERFACE_NAME); i++) {
-        wcout << endl;
-        wcout << "Display #" << i + 1 << endl;
-        wcout << "Device name: " << displayDevice.DeviceName << endl;
-        wcout << "Device string: " << displayDevice.DeviceString << endl;
-        wcout << "Active: " << (displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE) << endl;
-        wcout << "Mirroring: " << (displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER) << endl;
-        wcout << "Modes pruned: " << (displayDevice.StateFlags & DISPLAY_DEVICE_MODESPRUNED) << endl;
-        wcout << "Primary: " << (displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE) << endl;
-        wcout << "Removable: " << (displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE) << endl;
-        wcout << "VGA compatible: " << (displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE) << endl;
+        if (showAll || (displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE)) {
+            wcout << endl;
+            wcout << "Display #" << i + 1 << endl;
+            wcout << "Device name: " << displayDevice.DeviceName << endl;
+            wcout << "Device string: " << displayDevice.DeviceString << endl;
+            wcout << "Active: " << (displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE) << endl;
+            wcout << "Mirroring: " << (displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER) << endl;
+            wcout << "Modes pruned: " << (displayDevice.StateFlags & DISPLAY_DEVICE_MODESPRUNED) << endl;
+            wcout << "Primary: " << (displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE) << endl;
+            wcout << "Removable: " << (displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE) << endl;
+            wcout << "VGA compatible: " << (displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE) << endl;
 
-        DEVMODE devMode{ {}, {}, {}, sizeof devMode, 0, };
-        if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode))
-        {
-            wcout << "Dimensions: {" << devMode.dmPelsWidth << ", " << devMode.dmPelsHeight << "}" << endl;
-            wcout << "Position: {" << devMode.dmPosition.x << ", " << devMode.dmPosition.y << "}" << endl;
+            DEVMODE devMode{ {}, {}, {}, sizeof devMode, 0, };
+            if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode))
+            {
+                wcout << "Dimensions: {" << devMode.dmPelsWidth << ", " << devMode.dmPelsHeight << "}" << endl;
+                wcout << "Position: {" << devMode.dmPosition.x << ", " << devMode.dmPosition.y << "}" << endl;
+            }
         }
     }
 }
 
 void show_help(void) {
-    wcout << endl << "DPEdit 1.3.3" << endl;
+    wcout << endl << "DPEdit 1.4.0" << endl;
     wcout << "A command line utility to accurately position displays in a multi-monitor setup." << endl << endl;
     wcout << "Usage: dpedit.exe [/H] [/?]" << endl;
     wcout << "       dpedit.exe /L" << endl;
     wcout << "       dpedit.exe <displayNum> <xPos> <yPos> [<displayNum2> <xPos2> <yPos2>] ..." << endl << endl;
     wcout << "  Options:" << endl << endl;
     wcout << "  /H, /?          Shows this help page" << endl;
-    wcout << "  /L              Lists all displays and their indices" << endl;
+    wcout << "  /L              Lists active displays and their indices" << endl;
+    wcout << "  /A              Forces /L to list all registered displays" << endl;
     wcout << "  <displayNum>    The index of the display to position" << endl;
     wcout << "  <xPos>          The X (horizontal) position of the top-left corner of display <displayNum>." << endl;
     wcout << "  <YPos>          The Y (vertical) position of the top-left corner of display <displayNum>." << endl << endl;
