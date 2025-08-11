@@ -1,0 +1,22 @@
+# Sync repo to the Codeberg mirror
+name: Repo sync (GitHub -> Codeberg)
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch: # Manual dispatch
+
+jobs:
+  sync-repo-to-codeberg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: "Sync repo"
+        uses: yesolutions/mirror-action@master
+        with:
+          REMOTE: "https://codeberg.org/${{ github.repository }}.git"
+          GIT_USERNAME: ${{ github.repository_owner }}
+          GIT_PASSWORD: ${{ secrets.CODEBERG_PASSWORD }}
