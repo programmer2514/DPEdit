@@ -18,7 +18,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v3
@@ -28,7 +28,7 @@ jobs:
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=x64 ${{env.SOLUTION_FILE_PATH}}
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: Built Executable (x64)
         path: ${{env.SOLUTION_FILE_PATH}}\x64\${{env.BUILD_CONFIGURATION}}\DPEdit.exe
@@ -37,7 +37,7 @@ jobs:
     runs-on: windows-11-arm
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v3
@@ -47,7 +47,7 @@ jobs:
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=ARM64 ${{env.SOLUTION_FILE_PATH}}
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: Built Executable (ARM64)
         path: ${{env.SOLUTION_FILE_PATH}}\ARM64\${{env.BUILD_CONFIGURATION}}\DPEdit.exe
