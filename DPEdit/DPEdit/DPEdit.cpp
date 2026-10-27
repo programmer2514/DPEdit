@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
- | Display Position Editor v1.4.0                               |
+ | Display Position Editor v1.5.0                               |
  | By Benjamin J. Pryor                                         |
  |--------------------------------------------------------------|
  | A simple command line utility to accurately set the relative |
@@ -23,9 +23,9 @@ void set_display_pos(int argc, char** argv);
 void list_displays(bool showAll);
 void show_help(void);
 bool is_valid_int(string s);
+bool is_overlapping(long disp_num, long new_pos_x, long new_pos_y);
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
     if (argc > 1) {
 
         if (!strcmp(argv[1], "/H") || !strcmp(argv[1], "/h") || !strcmp(argv[1], "/?"))
@@ -35,9 +35,8 @@ int main(int argc, char** argv)
             if (argc > 2 && (!strcmp(argv[2], "/A") || !strcmp(argv[2], "/a")))
                 list_displays(true);
             else list_displays(false);
-        }
 
-        else set_display_pos(argc, argv);
+        } else set_display_pos(argc, argv);
 
     } else show_help();
 
@@ -52,27 +51,32 @@ void set_display_pos(int argc, char** argv) {
 
         if (is_valid_int(argv[(3 * i) + 1]) && is_valid_int(argv[(3 * i) + 2]) && is_valid_int(argv[(3 * i) + 3])) {
 
-            wcout << endl << "Applying position {" << argv[(3 * i) + 2] << ", " << argv[(3 * i) + 3] << "} to Display #" << argv[(3 * i) + 1] << "..." << endl;
+            long disp_num = stol(argv[(3 * i) + 1]) - 1;
+            long new_pos_x = stol(argv[(3 * i) + 2]);
+            long new_pos_y = stol(argv[(3 * i) + 3]);
 
-            if (EnumDisplayDevicesW(NULL, stol(argv[(3 * i) + 1]) - 1, &dmInfo, EDD_GET_DEVICE_INTERFACE_NAME) != 0) {
+            wcout << endl << "Applying position {" << new_pos_x << ", " << new_pos_y << "} to Display #" << (disp_num + 1) << "..." << endl;
+
+            if (EnumDisplayDevicesW(NULL, disp_num, &dmInfo, EDD_GET_DEVICE_INTERFACE_NAME) != 0) {
 
                 if (EnumDisplaySettingsExW(dmInfo.DeviceName, ENUM_CURRENT_SETTINGS, &dmMode, EDS_RAWMODE) != 0) {
 
+                    if (is_overlapping(disp_num, new_pos_x, new_pos_y))
+                        wcout << endl << "WARNING! New display position overlaps one or more current display positions." << endl << "Results may be inconsistent." << endl << endl;
+
                     dmMode.dmFields = DM_POSITION;
-                    dmMode.dmPosition.x = stol(argv[(3 * i) + 2]);
-                    dmMode.dmPosition.y = stol(argv[(3 * i) + 3]);
+                    dmMode.dmPosition.x = new_pos_x;
+                    dmMode.dmPosition.y = new_pos_y;
 
                     if (ChangeDisplaySettingsExW(dmInfo.DeviceName, &dmMode, NULL, CDS_GLOBAL | CDS_UPDATEREGISTRY, NULL) == DISP_CHANGE_SUCCESSFUL)
                         wcout << "Done!" << endl << endl;
                     else wcout << "Operation failed! Unable to write to display settings." << endl << "Skipping..." << endl << endl;
 
-                }
-                else wcout << "Operation failed! Unable to read display settings." << endl << "Skipping..." << endl << endl;
+                } else wcout << "Operation failed! Unable to read display settings." << endl << "Skipping..." << endl << endl;
 
-            }
-            else wcout << "Operation failed! Unable to connect to display." << endl << "Skipping..." << endl << endl;
-        }
-        else {
+            } else wcout << "Operation failed! Unable to connect to display." << endl << "Skipping..." << endl << endl;
+
+        } else {
             wcout << "Invalid argument(s) detected!" << endl;
             wcout << "Use 'dpedit.exe /?' for more info" << endl << endl;
         }
@@ -81,6 +85,7 @@ void set_display_pos(int argc, char** argv) {
 
 void list_displays(bool showAll) {
     DISPLAY_DEVICE displayDevice{ sizeof displayDevice, };
+    DEVMODE devMode{ {},{},{}, sizeof devMode, 0, };
 
     for (long i = 0; EnumDisplayDevices(nullptr, i, &displayDevice, EDD_GET_DEVICE_INTERFACE_NAME); i++) {
         if (showAll || (displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE)) {
@@ -95,9 +100,7 @@ void list_displays(bool showAll) {
             wcout << "Removable: " << (displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE) << endl;
             wcout << "VGA compatible: " << (displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE) << endl;
 
-            DEVMODE devMode{ {}, {}, {}, sizeof devMode, 0, };
-            if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode))
-            {
+            if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode)) {
                 wcout << "Dimensions: {" << devMode.dmPelsWidth << ", " << devMode.dmPelsHeight << "}" << endl;
                 wcout << "Position: {" << devMode.dmPosition.x << ", " << devMode.dmPosition.y << "}" << endl;
             }
@@ -106,7 +109,7 @@ void list_displays(bool showAll) {
 }
 
 void show_help(void) {
-    wcout << endl << "DPEdit 1.4.0" << endl;
+    wcout << endl << "DPEdit 1.5.0" << endl;
     wcout << "A command line utility to accurately position displays in a multi-monitor setup." << endl << endl;
     wcout << "Usage: dpedit.exe [/H] [/?]" << endl;
     wcout << "       dpedit.exe /L" << endl;
@@ -129,4 +132,34 @@ void show_help(void) {
 
 bool is_valid_int(string s) {
     return !s.empty() && (s.find_first_not_of("-0123456789") == string::npos);
+}
+
+bool is_overlapping(long disp_num, long new_pos_x, long new_pos_y) {
+    DISPLAY_DEVICE displayDevice{ sizeof displayDevice, };
+    DEVMODE devMode{ {},{},{}, sizeof devMode, 0, };
+
+    if (EnumDisplayDevices(nullptr, disp_num, &displayDevice, EDD_GET_DEVICE_INTERFACE_NAME)) {
+        if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode)) {
+
+            long dim_x = devMode.dmPelsWidth;
+            long dim_y = devMode.dmPelsHeight;
+
+            for (long i = 0; EnumDisplayDevices(nullptr, i, &displayDevice, EDD_GET_DEVICE_INTERFACE_NAME); i++) {
+                if ((i != disp_num) && (displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE)) {
+                    if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode)) {
+
+                        long x = devMode.dmPosition.x;
+                        long y = devMode.dmPosition.y;
+                        long w = devMode.dmPelsWidth;
+                        long h = devMode.dmPelsHeight;
+
+                        if ((new_pos_x + dim_x > x) && (new_pos_x < x + w) && (new_pos_y + dim_y > y) && (new_pos_y < y + h))
+                            return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
 }
